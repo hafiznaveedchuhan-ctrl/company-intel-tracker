@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const TAVILY_KEY = process.env.TAVILY_API_KEY ?? "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";
+
 export async function POST(req: NextRequest) {
   const { company, maxResults = 10 } = await req.json();
 
@@ -7,26 +9,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Company name is required" }, { status: 400 });
   }
 
-  const apiKey = process.env.TAVILY_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ error: "Tavily API key not configured" }, { status: 500 });
-  }
-
   try {
     const response = await fetch("https://api.tavily.com/search", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        api_key: apiKey,
-        query: `${company} latest news headlines 2025`,
+        api_key: TAVILY_KEY,
+        query: `${company} latest news headlines 2026`,
         search_depth: "advanced",
         include_answer: true,
         include_raw_content: false,
         max_results: maxResults,
-        include_domains: [],
-        exclude_domains: [],
         topic: "news",
       }),
     });
